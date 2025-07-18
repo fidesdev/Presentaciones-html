@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Proyecto CMPC: VIGÍA</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .gradient-bg {
+            background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+        }
+        .card {
+            background-color: white;
+            border-radius: 0.75rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        .nav-btn {
+            transition: all 0.3s ease;
+        }
+        .nav-btn.active {
+            background-color: #16a34a; /* green-600 */
+            color: white;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        .gantt-bar {
+            border-radius: 0.25rem;
+            color: white;
+            font-size: 0.75rem;
+            padding: 0.25rem 0.5rem;
+            overflow: hidden;
+            white-space: nowrap;
+        }
+    </style>
+</head>
+<body class="gradient-bg text-gray-800">
+
+    <div class="container mx-auto p-4 md:p-8">
+        
+        <!-- Header -->
+        <header class="text-center mb-6">
+            <h1 class="text-4xl md:text-5xl font-bold text-green-900">Proyecto VIGÍA</h1>
+            <p class="text-xl text-green-800 mt-2">Una colaboración entre CMPC y FIDES Consulting</p>
+        </header>
+
+        <!-- Navigation -->
+        <nav class="flex justify-center flex-wrap mb-10 bg-white/50 rounded-lg p-2 shadow-inner">
+            <button id="btn-vision" class="nav-btn px-6 py-2 rounded-md font-semibold text-gray-700">VISIÓN ESTRATÉGICA</button>
+            <button id="btn-details" class="nav-btn px-6 py-2 rounded-md font-semibold text-gray-700">DETALLES DEL PROYECTO</button>
+            <button id="btn-gantt" class="nav-btn px-6 py-2 rounded-md font-semibold text-gray-700">CARTA GANTT</button>
+        </nav>
+
+        <!-- Main Content -->
+        <main>
+
+            <!-- Page: Visión Estratégica (Proyecto VIGÍA) -->
+            <div id="page-vision" class="hidden">
+                 <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                     <div class="card p-6 md:col-span-2">
+                        <h2 class="text-2xl font-bold mb-4 text-green-700">Visión Estratégica: Proyecto VIGÍA</h2>
+                        <p class="text-gray-700 font-semibold">
+                           VIGÍA: <strong>V</strong>isualización e <strong>I</strong>nteligencia para la <strong>G</strong>estión de <strong>Í</strong>ndices de <strong>A</strong>menaza.
+                        </p>
+                        <p class="text-gray-700 mt-2">
+                           La visión del proyecto se centra en crear un sistema de gestión proactiva para detectar, evaluar y mitigar los riesgos de incendios antes de que escalen. Un "vigía" es un centinela que observa y alerta ante el peligro. Este concepto representa la misión de monitorear constantemente para anticipar y proteger el patrimonio de CMPC, pasando de un modelo reactivo a una inversión estratégica en prevención.
+                        </p>
+                    </div>
+                    <div class="card p-6">
+                        <h2 class="text-2xl font-bold mb-4 text-amber-600">El Problema</h2>
+                        <p class="text-gray-700">CMPC enfrenta anualmente la amenaza de incendios en sus plantaciones, generando enormes costos en combate, pérdida de patrimonio y daños a la infraestructura y al medio ambiente. La falta de una gestión proactiva y sistemática de los peligros es un factor clave que agrava el riesgo.</p>
+                    </div>
+                     <div class="card p-6">
+                        <h2 class="text-2xl font-bold mb-4 text-green-600">La Solución Propuesta</h2>
+                        <p class="text-gray-700">Una plataforma centralizada (web y móvil) que permite al personal en terreno reportar riesgos georreferenciados (tendidos eléctricos, quemas, etc.) con una app. El sistema evalúa, prioriza y asigna tareas de mitigación, permitiendo un monitoreo en tiempo real a través de dashboards.</p>
+                    </div>
+                     <div class="card p-6 md:col-span-2">
+                        <h2 class="text-2xl font-bold mb-4 text-green-700">Metodología y Piloto</h2>
+                        <p class="text-gray-700 mb-4">Se propuso un trabajo de co-desarrollo, combinando la experiencia de CMPC con la expertise tecnológica de FIDES. Para validar el concepto, se ofreció un <strong>programa piloto gratuito de 3 meses</strong> en un área geográfica definida, para probar la funcionalidad, recoger feedback y demostrar el valor de la herramienta antes de un despliegue a gran escala.</p>
+                    </div>
+                 </div>
+            </div>
+
+            <!-- Page: Detalles del Proyecto -->
+            <div id="page-details" class="hidden">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <div class="card p-6 md:col-span-2 lg:col-span-3">
+                        <h2 class="text-2xl font-bold mb-4 text-green-700">Detalles del Proyecto en Ejecución</h2>
+                        <p class="text-gray-700">
+                            Este proyecto consiste en el desarrollo de una solución tecnológica integral para <strong>prevenir incendios forestales</strong>. La iniciativa, liderada por FIDES Consulting para CMPC, busca transformar el enfoque reactivo de combate de incendios a uno <strong>preventivo y estratégico</strong>. Se abordan dos líneas de trabajo paralelas: <strong>1)</strong> La optimización y escalabilidad del sistema de registro de actividades que ya utilizaba Giovanni González, y <strong>2)</strong> El desarrollo del nuevo aplicativo VIGÍA para la gestión de riesgos y peligros de incendios.
+                        </p>
+                    </div>
+
+                    <div class="card p-6">
+                        <h2 class="text-2xl font-bold mb-4 text-green-700">Solución Técnica</h2>
+                        <p class="text-gray-700 mb-4">
+                            La solución se basa en migrar y potenciar las herramientas existentes de CMPC a una plataforma profesional con todas las capacidades de Google.
+                        </p>
+                        <ul class="list-disc list-inside space-y-2 text-gray-700">
+                            <li><strong>Aplicativo:</strong> AppSheet con funcionalidades avanzadas.</li>
+                            <li><strong>Base de Datos:</strong> MySQL en Google Cloud para manejar grandes volúmenes de datos.</li>
+                            <li><strong>Optimización:</strong> Mejora de eficiencia, reducción de tiempos de sincronización y solución de latencia.</li>
+                            <li><strong>Integración:</strong> Conexión segura a Power BI a través de una IP fija.</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="card p-6">
+                        <h2 class="text-2xl font-bold mb-4 text-green-700">Requerimientos y Mejoras (CMPC)</h2>
+                        <p class="text-gray-700 mb-4">
+                            Se han incorporado las siguientes oportunidades de mejora solicitadas por CMPC para fortalecer el sistema:
+                        </p>
+                        <ul class="list-disc list-inside space-y-2 text-gray-700">
+                            <li>Módulo de Riesgos (Georef, fotos, nivel).</li>
+                            <li>Validación de aperturas de recursos.</li>
+                            <li>Mejoras en sincronización y gestión de turnos.</li>
+                            <li>Notificaciones de alerta para actividades.</li>
+                             <li>Gestión de actividades de combate.</li>
+                        </ul>
+                    </div>
+
+                    <div class="card p-6">
+                        <h2 class="text-2xl font-bold mb-4 text-green-700">Beneficios para CMPC</h2>
+                        <ul class="list-disc list-inside space-y-2 text-gray-700">
+                            <li><strong>Ahorro de Costos:</strong> Prevenir es más eficiente que combatir.</li>
+                            <li><strong>Sistema Sólido:</strong> Plataforma centralizada para la prevención.</li>
+                            <li><strong>Toma de Decisiones:</strong> Datos ordenados para análisis estratégico.</li>
+                            <li><strong>Crecimiento del Personal:</strong> Foco en análisis en vez de gestión de datos.</li>
+                            <li><strong>Escalabilidad:</strong> Potencial para extender el sistema a colaboradores externos.</li>
+                        </ul>
+                    </div>
+
+                    <div class="card p-6 md:col-span-3">
+                        <h2 class="text-2xl font-bold mb-4 text-green-700">Participantes del Proyecto</h2>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <h3 class="font-semibold text-lg">FIDES Consulting</h3>
+                                <ul class="list-disc list-inside text-gray-700">
+                                    <li>Héctor Morales (Gerente)</li>
+                                    <li>Camilo Morales (Líder Técnico)</li>
+                                </ul>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold text-lg">CMPC</h3>
+                                <ul class="list-disc list-inside text-gray-700">
+                                    <li>Giovanni González (Jefe de Proyecto, Incendios)</li>
+                                    <li>Yesenia Sepúlveda (Colaboradora)</li>
+                                    <li>Luis Núñez (Supervisor, Talca)</li>
+                                    <li>Arturo Ahumada (Impulsor Inicial, Freelance)</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Page: Carta Gantt -->
+            <div id="page-gantt" class="hidden">
+                 <div class="card p-6">
+                    <h2 class="text-2xl font-bold mb-6 text-center text-green-700">Carta Gantt del Proyecto</h2>
+                    
+                    <!-- Leyenda -->
+                    <div class="flex justify-center gap-4 mb-6 text-sm">
+                        <div class="flex items-center"><span class="w-4 h-4 bg-green-700 rounded-full mr-2"></span>Cumplido</div>
+                        <div class="flex items-center"><span class="w-4 h-4 bg-green-500 rounded-full mr-2"></span>En Progreso</div>
+                        <div class="flex items-center"><span class="w-4 h-4 bg-green-300 rounded-full mr-2"></span>Próximo</div>
+                    </div>
+
+                    <div class="space-y-8">
+                        <!-- Línea de Trabajo 1 -->
+                        <div>
+                            <h3 class="text-xl font-semibold mb-3 text-gray-800 border-b-2 border-green-200 pb-2">Línea 1: Optimización Sistema Existente (Apoyo a Giovanni)</h3>
+                            <div class="grid grid-cols-6 gap-2 text-center font-bold mb-2">
+                                <div>Actividad</div>
+                                <div>Mayo</div>
+                                <div>Junio</div>
+                                <div>Julio</div>
+                                <div>Agosto</div>
+                                <div>Sept.</div>
+                            </div>
+                            <div class="grid grid-cols-6 gap-2 items-center mb-2">
+                                <div class="text-left text-sm">Análisis y copia de sistema</div>
+                                <div class="col-span-1 gantt-bar bg-green-700">Completado</div>
+                            </div>
+                            <div class="grid grid-cols-6 gap-2 items-center mb-2">
+                                <div class="text-left text-sm">Creación BBDD y optimización</div>
+                                <div class="col-start-3 col-span-1 gantt-bar bg-green-700">Completado</div>
+                            </div>
+                            <div class="grid grid-cols-6 gap-2 items-center mb-2">
+                                <div class="text-left text-sm">Implementación de mejoras CMPC</div>
+                                <div class="col-start-3 col-span-1 gantt-bar bg-green-700">Completado</div>
+                            </div>
+                            <div class="grid grid-cols-6 gap-2 items-center mb-2">
+                                <div class="text-left text-sm">Pruebas y validación inicial</div>
+                                <div class="col-start-4 col-span-1 gantt-bar bg-green-500">En Progreso</div>
+                            </div>
+                        </div>
+
+                        <!-- Línea de Trabajo 2 -->
+                        <div>
+                            <h3 class="text-xl font-semibold mb-3 text-gray-800 border-b-2 border-green-200 pb-2">Línea 2: Desarrollo Aplicativo VIGÍA</h3>
+                             <div class="grid grid-cols-6 gap-2 text-center font-bold mb-2">
+                                <div>Actividad</div>
+                                <div>Mayo</div>
+                                <div>Junio</div>
+                                <div>Julio</div>
+                                <div>Agosto</div>
+                                <div>Sept.</div>
+                            </div>
+                             <div class="grid grid-cols-6 gap-2 items-center mb-2">
+                                <div class="text-left text-sm">Reuniones iniciales y estrategia</div>
+                                <div class="col-start-2 col-span-1 gantt-bar bg-green-700">Completado</div>
+                            </div>
+                            <div class="grid grid-cols-6 gap-2 items-center mb-2">
+                                <div class="text-left text-sm">Definición y desarrollo de prototipo</div>
+                                <div class="col-start-3 col-span-1 gantt-bar bg-green-700">Completado</div>
+                            </div>
+                             <div class="grid grid-cols-6 gap-2 items-center mb-2">
+                                <div class="text-left text-sm">Reunión de validación (Hito)</div>
+                                <div class="col-start-4 col-span-1 gantt-bar bg-green-500">18/07</div>
+                            </div>
+                            <div class="grid grid-cols-6 gap-2 items-center mb-2">
+                                <div class="text-left text-sm">Inicio Fase Piloto (Captura de datos)</div>
+                                <div class="col-start-4 col-span-1 gantt-bar bg-green-300 text-black">Próximo</div>
+                            </div>
+                            <div class="grid grid-cols-6 gap-2 items-center mb-2">
+                                <div class="text-left text-sm">Análisis piloto y ajustes</div>
+                                <div class="col-start-5 col-span-1 gantt-bar bg-green-300 text-black">Próximo</div>
+                            </div>
+                            <div class="grid grid-cols-6 gap-2 items-center mb-2">
+                                <div class="text-left text-sm">Propuesta económica y aprobación final</div>
+                                <div class="col-start-6 col-span-1 gantt-bar bg-green-300 text-black">Próximo</div>
+                            </div>
+                        </div>
+                    </div>
+                 </div>
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer class="text-center mt-10 pt-6 border-t border-gray-300">
+            <p class="text-gray-600">&copy; 2024 - Proyecto VIGÍA | FIDES Consulting & CMPC</p>
+        </footer>
+
+    </div>
+    
+    <script>
+        const btnVision = document.getElementById('btn-vision');
+        const btnDetails = document.getElementById('btn-details');
+        const btnGantt = document.getElementById('btn-gantt');
+        
+        const pageVision = document.getElementById('page-vision');
+        const pageDetails = document.getElementById('page-details');
+        const pageGantt = document.getElementById('page-gantt');
+
+        function showPage(pageToShow, btnToActivate) {
+            // Hide all pages
+            pageVision.classList.add('hidden');
+            pageDetails.classList.add('hidden');
+            pageGantt.classList.add('hidden');
+            
+            // Deactivate all buttons
+            btnVision.classList.remove('active');
+            btnDetails.classList.remove('active');
+            btnGantt.classList.remove('active');
+
+            // Show selected page and activate button
+            pageToShow.classList.remove('hidden');
+            btnToActivate.classList.add('active');
+        }
+
+        btnVision.addEventListener('click', () => showPage(pageVision, btnVision));
+        btnDetails.addEventListener('click', () => showPage(pageDetails, btnDetails));
+        btnGantt.addEventListener('click', () => showPage(pageGantt, btnGantt));
+
+        // Set initial state
+        showPage(pageVision, btnVision);
+    </script>
+
+</body>
+</html>
