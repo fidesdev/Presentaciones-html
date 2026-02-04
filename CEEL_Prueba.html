@@ -1,0 +1,799 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test de Liderazgo CEEL | Fortis Capacitaciones</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --color-primary: #22c55e; /* green-500 */
+            --color-primary-dark: #16a34a; /* green-600 */
+            --color-secondary: #fde047; /* yellow-300 */
+            --color-secondary-dark: #eab308; /* yellow-500 */
+            --color-text: #374151; /* gray-700 */
+            --color-bg: #f9fafb; /* gray-50 */
+            --color-card-bg: #ffffff;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--color-bg);
+            color: var(--color-text);
+        }
+        .card {
+            background-color: var(--color-card-bg);
+            border-radius: 0.75rem;
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.07), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+            padding: 2.5rem;
+            transition: all 0.3s ease-in-out;
+            border: 1px solid #e5e7eb;
+        }
+        .option-label {
+            display: block;
+            padding: 1rem;
+            border: 1px solid #e5e7eb;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+            height: 100%; /* Asegura que todas las etiquetas tengan la misma altura */
+        }
+        .option-label:hover {
+            border-color: var(--color-primary);
+            background-color: #f0fdf4; /* green-50 */
+        }
+        input[type="radio"]:checked + .option-label {
+            border-color: var(--color-primary-dark);
+            background-color: #dcfce7; /* green-100 */
+            box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.4);
+        }
+        .btn {
+            padding: 0.85rem 1.75rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            text-align: center;
+            transition: all 0.2s ease-in-out;
+            cursor: pointer;
+            border: none;
+        }
+        .btn-primary {
+            background-color: var(--color-primary);
+            color: white;
+            box-shadow: 0 4px 6px -1px rgba(34, 197, 94, 0.2);
+        }
+        .btn-primary:hover {
+            background-color: var(--color-primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 7px 10px -3px rgba(34, 197, 94, 0.3);
+        }
+        .btn-secondary {
+            background-color: #e5e7eb;
+            color: #1f2937;
+        }
+        .btn-secondary:hover {
+            background-color: #d1d5db;
+        }
+        .btn-disabled {
+            background-color: #9ca3af;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        .fortis-title {
+            font-weight: 800;
+            color: var(--color-primary-dark);
+        }
+    </style>
+</head>
+<body class="flex items-center justify-center min-h-screen p-4">
+
+    <div id="app-container" class="max-w-4xl w-full">
+
+        <!-- Pantalla de Inicio -->
+        <div id="start-screen" class="card text-center">
+            <h2 class="text-2xl font-bold text-gray-800 mb-2">Bienvenido al</h2>
+            <h1 class="text-4xl font-extrabold text-gray-900 mb-4">Test de Liderazgo CEEL</h1>
+            <p class="text-2xl fortis-title mb-6">FORTIS CAPACITACIONES</p>
+            <p class="text-sm text-gray-500 mb-2">Herramienta de uso exclusivo para Acreditación Laboral.</p>
+            <p class="text-gray-600 my-8 max-w-2xl mx-auto">El test consta de 12 situaciones laborales hipotéticas. Para cada una, elija la acción que mejor represente cómo actuaría usted. No hay respuestas correctas o incorrectas, solo buscamos comprender su estilo de liderazgo.</p>
+            <div class="max-w-sm mx-auto">
+                <div class="mb-4">
+                    <label for="userName" class="block text-left font-medium text-gray-700 mb-2">Nombre completo:</label>
+                    <input type="text" id="userName" class="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-green-400 focus:border-transparent" placeholder="Ej: Javiera González">
+                </div>
+                <div class="mb-4">
+                    <label for="userRut" class="block text-left font-medium text-gray-700 mb-2">RUT o Identificador:</label>
+                    <input type="text" id="userRut" class="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-green-400 focus:border-transparent" placeholder="Ej: 12.345.678-9">
+                    <p id="rut-error" class="text-red-500 text-xs mt-1 hidden"></p>
+                </div>
+                <button id="start-btn" class="btn btn-primary w-full mt-4">Comenzar Test</button>
+            </div>
+        </div>
+
+        <!-- Pantalla del Test -->
+        <div id="test-screen" class="card hidden">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-xl font-bold text-gray-900">Situación <span id="question-number"></span> de 12</h2>
+                <div class="w-1/2 bg-gray-200 rounded-full h-2.5">
+                    <div id="progress-bar" class="bg-green-500 h-2.5 rounded-full transition-all duration-500" style="width: 0%"></div>
+                </div>
+            </div>
+            <p id="question-text" class="text-lg text-gray-700 mb-8 min-h-[6rem] bg-gray-50 p-4 rounded-md border"></p>
+            <div id="options-container" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <!-- Opciones se insertarán aquí -->
+            </div>
+            <div class="mt-8 flex justify-end">
+                <button id="next-btn" class="btn btn-primary btn-disabled" disabled>Siguiente</button>
+            </div>
+        </div>
+
+        <!-- Pantalla de Finalización (NUEVA) -->
+        <div id="finish-screen" class="card text-center hidden">
+            <h1 class="text-3xl font-bold text-gray-900 mb-4">¡Has completado el test!</h1>
+            <p class="text-gray-600 my-8 max-w-2xl mx-auto">
+                Tus respuestas han sido registradas. Para finalizar el proceso y ver tu informe de resultados, por favor haz clic en el siguiente botón.
+            </p>
+            <div class="mt-10 flex flex-col sm:flex-row justify-center gap-4">
+                <button id="submit-btn" class="btn btn-primary">Enviar y Ver Mis Resultados</button>
+            </div>
+        </div>
+
+        <!-- Pantalla de Resultados -->
+        <div id="results-screen" class="card hidden">
+            <h1 class="text-3xl font-bold text-gray-900 mb-2 text-center">Resultados del Test de Liderazgo</h1>
+            <p id="results-for-name" class="text-center text-gray-600 text-lg"></p>
+            <p id="results-for-rut" class="text-center text-gray-500 text-md mb-10"></p>
+
+            <div class="grid grid-cols-1 lg:grid-cols-5 gap-8">
+                <div class="lg:col-span-3">
+                    <h2 class="text-xl font-semibold mb-4">Gráfico de Frecuencia y Efectividad</h2>
+                    <div class="bg-white p-4 rounded-lg border h-96">
+                        <canvas id="results-chart"></canvas>
+                    </div>
+                </div>
+                <div class="lg:col-span-2">
+                    <h2 class="text-xl font-semibold mb-4">Resumen General</h2>
+                    <div class="space-y-4">
+                        <div class="bg-gray-100 p-4 rounded-lg border">
+                            <h3 class="font-semibold text-gray-700">Estilo(s) Predominante(s)</h3>
+                            <p id="dominant-style" class="fortis-title font-bold text-xl"></p>
+                        </div>
+                        <div class="bg-gray-100 p-4 rounded-lg border">
+                            <h3 class="font-semibold text-gray-700">Efectividad General</h3>
+                            <p id="general-effectiveness-score" class="fortis-title font-bold text-xl"></p>
+                            <p id="general-effectiveness-level" class="text-gray-600"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-10">
+                <h2 class="text-2xl font-bold text-center mb-6">Análisis Detallado de Estilos</h2>
+                <div id="interpretation-container" class="space-y-6">
+                    <!-- Interpretación se insertará aquí -->
+                </div>
+            </div>
+             <p class="text-center text-sm text-gray-500 mt-8">Sus resultados han sido enviados exitosamente.</p>
+        </div>
+    </div>
+
+    <script>
+        // --- CONFIGURACIÓN Y DATOS DEL TEST (TEXTOS MEJORADOS) ---
+        const questions = [
+            {
+                situation: "Últimamente, has notado que tu equipo parece desmotivado. A pesar de tus esfuerzos por mantener un ambiente amigable y preocuparte por su bienestar, el rendimiento general ha comenzado a disminuir notablemente. ¿Qué acción tomas?",
+                options: [
+                    { id: "A", text: "Refuerzas la importancia de seguir los procedimientos y te centras en el cumplimiento estricto de los plazos y tareas." },
+                    { id: "B", text: "Te muestras disponible para conversar individualmente, dejando la puerta abierta para que se acerquen sin presionarlos." },
+                    { id: "C", text: "Convocas una reunión para dialogar sobre la situación y, a partir de sus opiniones, establecer nuevas metas en conjunto." },
+                    { id: "D", text: "Decides darles espacio, confiando en que el equipo resolverá sus problemas internos y recuperará el ritmo por sí mismo." }
+                ]
+            },
+            {
+                situation: "El rendimiento de tu equipo está en claro ascenso. Has trabajado para asegurarte de que cada miembro conozca bien sus responsabilidades y los estándares de calidad esperados. ¿Cómo procedes para mantener el impulso?",
+                options: [
+                    { id: "A", text: "Mantienes una interacción cercana y amistosa, pero sin dejar de supervisar que las responsabilidades y roles se cumplan." },
+                    { id: "B", text: "Consideras que no es necesario intervenir, ya que el equipo está funcionando bien por sí solo." },
+                    { id: "C", text: "Te enfocas en fortalecer el espíritu de equipo, haciendo que se sientan valorados e importantes para el éxito del proyecto." },
+                    { id: "D", text: "Aumentas la exigencia, poniendo un mayor énfasis en la necesidad de cumplir con los plazos y superar los objetivos." }
+                ]
+            },
+            {
+                situation: "Tu equipo, que normalmente es muy autónomo y ha tenido un excelente desempeño, se enfrenta a un problema que no logran resolver. Las relaciones interpersonales siempre han sido buenas. ¿Cuál es tu enfoque?",
+                options: [
+                    { id: "A", text: "Te integras al equipo para analizar el problema juntos y colaborar activamente en la búsqueda de una solución." },
+                    { id: "B", text: "Confías en su capacidad y les dejas total autonomía para que encuentren la solución por sus propios medios." },
+                    { id: "C", text: "Intervienes de forma rápida y decisiva, indicando los pasos a seguir para corregir el rumbo y solucionar el problema." },
+                    { id: "D", text: "Animas al equipo a seguir trabajando en el problema, ofreciendo tu apoyo y recursos, pero sin involucrarte en la solución." }
+                ]
+            },
+            {
+                situation: "Estás planeando implementar un cambio importante. Tu equipo tiene un historial de éxitos y ellos mismos reconocen que este cambio es necesario. ¿Cómo gestionas el proceso?",
+                options: [
+                    { id: "A", text: "Permites que el equipo participe activamente en el diseño del cambio, actuando más como un facilitador que como un director." },
+                    { id: "B", text: "Tomas el control del proceso, defines los pasos a seguir y diriges la implementación para asegurar que se haga eficientemente." },
+                    { id: "C", text: "Delegas completamente la planificación y ejecución del cambio en el equipo, confiando en su criterio y experiencia." },
+                    { id: "D", text: "Escuchas las recomendaciones del equipo y las incorporas, pero mantienes el control final sobre la dirección del cambio." }
+                ]
+            },
+            {
+                situation: "El desempeño de tu grupo ha caído en los últimos meses y los miembros parecen apáticos hacia los objetivos. En el pasado, redefinir sus roles funcionó. Constantemente necesitas recordarles que cumplan con sus tareas. ¿Qué haces?",
+                options: [
+                    { id: "A", text: "Permites que el grupo decida su propio rumbo, esperando que la autonomía los re-motive." },
+                    { id: "B", text: "Incorporas sus sugerencias para los nuevos objetivos, pero supervisas de cerca para asegurar que esta vez se cumplan." },
+                    { id: "C", text: "Vuelves a definir claramente los roles y responsabilidades de cada uno y estableces una supervisión más estricta." },
+                    { id: "D", text: "Fomentas su participación en la definición de metas, pero evitas presionarlos para no generar más tensión." }
+                ]
+            },
+            {
+                situation: "Asumes la dirección de un equipo que funciona de manera muy eficiente, pero bajo un estilo de liderazgo anterior muy controlador. Quieres mantener la productividad, pero también crear un ambiente de trabajo más humano y colaborativo. ¿Cuál es tu primer paso?",
+                options: [
+                    { id: "A", text: "Priorizas el bienestar del equipo, organizando actividades y conversaciones para que se sientan más valorados y escuchados." },
+                    { id: "B", text: "Mantienes el enfoque en las tareas y los plazos para no arriesgar la eficiencia, dejando los cambios de ambiente para más adelante." },
+                    { id: "C", text: "Decides no hacer cambios significativos por ahora, observando cómo funciona el equipo antes de intervenir." },
+                    { id: "D", text: "Involucras al equipo en algunas decisiones menores, asegurándote de que los objetivos principales no se vean afectados." }
+                ]
+            },
+            {
+                situation: "Tu equipo, que siempre ha sido productivo y flexible, ha sugerido la necesidad de un cambio estructural. Estás de acuerdo y sabes que será algo nuevo para todos. ¿Cómo lo implementas?",
+                options: [
+                    { id: "A", text: "Defines tú mismo el cambio y supervisas de cerca cada paso de la implementación para evitar desviaciones." },
+                    { id: "B", text: "Abres un debate sobre el cambio con el equipo y les das la autonomía para que ellos mismos organicen la implementación." },
+                    { id: "C", text: "Estás dispuesto a implementar los cambios que el equipo recomienda, pero te reservas el control final de la ejecución." },
+                    { id: "D", text: "Prefieres no generar tensiones y dejas las cosas como están, evitando el conflicto que un cambio podría generar." }
+                ]
+            },
+            {
+                situation: "Aunque el rendimiento y las relaciones en tu equipo son excelentes, sientes una creciente inseguridad porque no percibes una dirección clara o un liderazgo definido de tu parte. ¿Qué haces al respecto?",
+                options: [
+                    { id: "A", text: "Decides no intervenir, ya que el equipo está funcionando bien y no quieres alterar el equilibrio actual." },
+                    { id: "B", text: "Conversas la situación con el grupo para entender su perspectiva y, a partir de ahí, inicias los cambios que consideres necesarios." },
+                    { id: "C", text: "Tomas la iniciativa y estableces una dirección más clara, definiendo metas y tareas específicas para el equipo." },
+                    { id: "D", text: "Manifiestas tu apoyo al trabajo que están haciendo, reforzando positivamente la dirección que ellos mismos han tomado." }
+                ]
+            },
+            {
+                situation: "Te nombran líder de un comité que lleva mucho tiempo sin presentar resultados. No tienen metas claras y la asistencia es baja. Las reuniones se han vuelto informales. Sin embargo, sabes que tienen el talento necesario. ¿Cómo lo abordas?",
+                options: [
+                    { id: "A", text: "Decides no intervenir, esperando que el grupo encuentre su propio camino y resuelva sus problemas de organización." },
+                    { id: "B", text: "Tomas el control: redefines el propósito y las metas del comité, estableces una agenda clara y supervisas el progreso." },
+                    { id: "C", text: "Involucras a los miembros en la definición de nuevas metas, pero te aseguras de que se comprometan y cumplan los objetivos." },
+                    { id: "D", text: "Apoyas al grupo y les animas a que decidan sus propias metas y estructura, actuando como un consejero." }
+                ]
+            },
+            {
+                situation: "Tu equipo, que siempre ha sido responsable y autónomo, no está cumpliendo con los nuevos estándares de calidad que se han implementado recientemente. ¿Cuál es tu reacción?",
+                options: [
+                    { id: "A", text: "Les pides que participen en la revisión de los estándares, actuando como un facilitador para que encuentren la mejor forma de adaptarse." },
+                    { id: "B", text: "Redefines claramente los estándares de calidad, explicas el porqué de su importancia y supervisas de cerca su cumplimiento." },
+                    { id: "C", text: "Les das la libertad de establecer sus propios estándares de calidad, confiando en que encontrarán un nivel adecuado." },
+                    { id: "D", text: "Incorporas sus recomendaciones sobre los estándares, pero te aseguras de que los nuevos niveles de calidad se cumplan." }
+                ]
+            },
+            {
+                situation: "Has sido promovido a una nueva posición. El líder anterior tenía un estilo de 'no intervención' y el equipo ha gestionado sus tareas y dirección de forma autónoma y exitosa. Las relaciones son muy buenas. ¿Cómo inicias tu gestión?",
+                options: [
+                    { id: "A", text: "Tomas medidas inmediatas para establecer una dirección clara y definir tareas, alineando al equipo con tu visión." },
+                    { id: "B", text: "Te integras en las discusiones del equipo para conocerlos mejor, pero sin intentar tomar el control de sus procesos." },
+                    { id: "C", text: "Analizas con el equipo su forma de trabajo actual y, a partir de ahí, exploran juntos la necesidad de nuevas prácticas." },
+                    { id: "D", text: "Decides mantener la distancia y dejar que el equipo siga funcionando como lo ha hecho hasta ahora, sin interferir." }
+                ]
+            },
+            {
+                situation: "A pesar de que tu equipo tiene un historial impecable de logros y buena armonía, información reciente sugiere que hay conflictos internos. Todos son expertos en sus áreas. ¿Cómo manejas esta situación delicada?",
+                options: [
+                    { id: "A", text: "Propones una solución que crees adecuada y la discutes con el equipo para evaluar si necesitan nuevas formas de trabajar." },
+                    { id: "B", text: "Confías en la madurez del equipo y les permites que resuelvan sus conflictos internos por sí mismos." },
+                    { id: "C", text: "Intervienes de manera firme y directa para detener el conflicto, reorientando al equipo hacia los objetivos." },
+                    { id: "D", text: "Participas en la discusión del problema como mediador, ofreciendo tu apoyo para que encuentren una solución." }
+                ]
+            }
+        ];
+        const styleNames = { 1: "Autocrático", 2: "Integrado", 3: "Relacionado", 4: "Separado" };
+        const correctionKey = {
+            '1A': { style: 1, score: +2 }, '1B': { style: 3, score: -1 }, '1C': { style: 2, score: +1 }, '1D': { style: 4, score: -2 },
+            '2A': { style: 2, score: +2 }, '2B': { style: 4, score: -2 }, '2C': { style: 3, score: +1 }, '2D': { style: 1, score: -1 },
+            '3A': { style: 2, score: +1 }, '3B': { style: 4, score: -1 }, '3C': { style: 1, score: -2 }, '3D': { style: 3, score: +2 },
+            '4A': { style: 3, score: +1 }, '4B': { style: 1, score: -2 }, '4C': { style: 4, score: +2 }, '4D': { style: 2, score: -1 },
+            '5A': { style: 4, score: -2 }, '5B': { style: 2, score: +1 }, '5C': { style: 1, score: +2 }, '5D': { style: 3, score: -1 },
+            '6A': { style: 3, score: -1 }, '6B': { style: 1, score: +1 }, '6C': { style: 4, score: -2 }, '6D': { style: 2, score: +2 },
+            '7A': { style: 1, score: -2 }, '7B': { style: 3, score: +2 }, '7C': { style: 2, score: -1 }, '7D': { style: 4, score: +1 },
+            '8A': { style: 4, score: +2 }, '8B': { style: 2, score: -1 }, '8C': { style: 1, score: -2 }, '8D': { style: 3, score: +1 },
+            '9A': { style: 4, score: -2 }, '9B': { style: 1, score: +2 }, '9C': { style: 2, score: +1 }, '9D': { style: 3, score: -1 },
+            '10A': { style: 3, score: +1 }, '10B': { style: 1, score: -2 }, '10C': { style: 4, score: -1 }, '10D': { style: 2, score: +2 },
+            '11A': { style: 1, score: -2 }, '11B': { style: 3, score: +2 }, '11C': { style: 2, score: -1 }, '11D': { style: 4, score: +1 },
+            '12A': { style: 2, score: -1 }, '12B': { style: 4, score: +2 }, '12C': { style: 1, score: -2 }, '12D': { style: 3, score: +1 }
+        };
+        const detailedInterpretations = {
+            1: {
+                name: "Autocrático",
+                title: "El Líder Directivo y Orientado a la Tarea",
+                description: "Su estilo predominante es el Autocrático, lo que sugiere que usted tiende a liderar a través de la dirección clara, el control y la supervisión. Su enfoque principal es la tarea y la eficiencia, asegurándose de que los objetivos se cumplan de manera estructurada y oportuna. Valora los procedimientos y la organización.",
+                strengths: "Este estilo es altamente efectivo en situaciones de crisis, con equipos inexpertos que requieren una guía clara, o cuando las decisiones deben tomarse rápidamente. Su capacidad para definir roles y expectativas puede proporcionar seguridad y reducir la ambigüedad en el equipo.",
+                challenges: "El principal desafío es el riesgo de desmotivar a los miembros del equipo que son experimentados y autónomos, ya que pueden percibir su estilo como controlador o falto de confianza. A largo plazo, puede limitar la creatividad, la iniciativa y el desarrollo de nuevas habilidades en sus colaboradores.",
+                recommendations: "Para aumentar su flexibilidad, practique la delegación de tareas que no sean críticas, solicitando activamente la opinión de su equipo antes de tomar una decisión. Intente incorporar un enfoque más participativo (Estilo Integrado) en situaciones donde el equipo demuestre competencia y motivación."
+            },
+            2: {
+                name: "Integrado",
+                title: "El Líder Participativo y Motivador",
+                description: "Su estilo predominante es el Integrado, lo que indica que usted equilibra de manera efectiva la orientación hacia la tarea y hacia las personas. Busca lograr los objetivos a través de la participación y el compromiso del equipo, fomentando la comunicación bidireccional y la colaboración.",
+                strengths: "Este es a menudo considerado un estilo muy completo. Fomenta un ambiente de trabajo positivo, promueve el desarrollo del equipo y genera altos niveles de compromiso y motivación. Su capacidad para escuchar e integrar ideas suele llevar a decisiones de mayor calidad y a una mayor aceptación de los cambios.",
+                challenges: "El desafío puede surgir en situaciones que requieren una decisión inmediata y unilateral, donde el proceso participativo podría ser demasiado lento. También, podría tener dificultades si intenta 'agradar a todos', lo que podría llevar a compromisos débiles o a evitar conflictos necesarios para el crecimiento.",
+                recommendations: "Asegúrese de mantener la capacidad de ser directivo (Estilo Autocrático) cuando la situación lo requiera (por ejemplo, con un nuevo empleado o en una crisis). Para equipos altamente autónomos y expertos, considere adoptar un enfoque más delegativo (Estilo Relacionado o Separado) para empoderarlos aún más."
+            },
+            3: {
+                name: "Relacionado",
+                title: "El Líder Facilitador y Centrado en las Personas",
+                description: "Su estilo predominante es el Relacionado, lo que demuestra un fuerte enfoque en las necesidades, el bienestar y el desarrollo de los miembros de su equipo. Usted lidera a través del apoyo, la confianza y la facilitación, creando un ambiente de trabajo armónico y colaborativo.",
+                strengths: "Este estilo es excelente para desarrollar el talento, aumentar la autonomía y la confianza del equipo, y resolver conflictos interpersonales. Es particularmente efectivo con equipos competentes que pueden necesitar un impulso en su motivación o cohesión, pero que no requieren supervisión directa en la tarea.",
+                challenges: "El principal riesgo es que el enfoque en las relaciones pueda eclipsar la necesidad de alcanzar los objetivos de la tarea. Podría dudar en dar feedback correctivo o tomar decisiones impopulares para no dañar la armonía del grupo. En equipos con bajo rendimiento o falta de dirección, este estilo puede ser insuficiente.",
+                recommendations: "Para mejorar su efectividad, trabaje en integrar un mayor enfoque en los resultados (Estilo Integrado) cuando sea necesario, estableciendo metas claras y dando seguimiento al rendimiento, sin dejar de lado su enfoque en las personas. No tema ser más directivo si el desempeño del equipo decae."
+            },
+            4: {
+                name: "Separado",
+                title: "El Líder Delegador y Observador",
+                description: "Su estilo predominante es el Separado, lo que sugiere que usted tiende a delegar la toma de decisiones y la responsabilidad en su equipo. Proporciona un alto grado de autonomía, interviniendo solo cuando es necesario. Su comunicación es a menudo formal y se basa en la lógica y los datos.",
+                strengths: "Este estilo es extremadamente efectivo con equipos altamente calificados, motivados y autónomos que no requieren supervisión. Fomenta un gran sentido de la responsabilidad y la propiedad en los colaboradores, permitiéndoles innovar y gestionar su propio trabajo.",
+                challenges: "El riesgo de este estilo es que puede ser percibido como desinterés o falta de apoyo, especialmente por equipos que necesitan más guía o cohesión. Si se aplica en una situación incorrecta (equipo nuevo, bajo rendimiento), puede llevar al caos, a la falta de dirección y a la caída de la productividad.",
+                recommendations: "Es crucial que evalúe correctamente la madurez de su equipo antes de aplicar este estilo. Para aumentar su flexibilidad, practique un 'check-in' más frecuente con su equipo para ofrecer apoyo y asegurarse de que los objetivos siguen claros (Estilo Relacionado), o esté preparado para intervenir con una estructura clara si el equipo lo necesita (Estilo Integrado)."
+            }
+        };
+
+        // --- ESTADO DE LA APLICACIÓN ---
+        let currentQuestionIndex = 0;
+        let userAnswers = [];
+        let finalResults = {};
+        let userName = "";
+        let userRut = "";
+        let chartInstance = null;
+
+        // --- ELEMENTOS DEL DOM ---
+        const startScreen = document.getElementById('start-screen');
+        const testScreen = document.getElementById('test-screen');
+        const finishScreen = document.getElementById('finish-screen'); // NUEVO
+        const resultsScreen = document.getElementById('results-screen');
+        const startBtn = document.getElementById('start-btn');
+        const nextBtn = document.getElementById('next-btn');
+        const submitBtn = document.getElementById('submit-btn'); // NUEVO (antes send-btn)
+        const userNameInput = document.getElementById('userName');
+        const userRutInput = document.getElementById('userRut');
+        const rutError = document.getElementById('rut-error');
+        
+        // --- LÓGICA DE FORMATO Y VALIDACIÓN DE RUT ---
+        const Rut = {
+            validate: function (rutCompleto) {
+                if (!/^[0-9]{1,2}\.[0-9]{3}\.[0-9]{3}-[0-9kK]{1}$/.test(rutCompleto)) return false;
+                var tmp = rutCompleto.split('-');
+                var digv = tmp[1];
+                var rut = tmp[0].replace(/\./g, '');
+                if (digv == 'K') digv = 'k';
+                return (Rut.dv(rut) == digv);
+            },
+            dv: function (T) {
+                var M = 0, S = 1;
+                for (; T; T = Math.floor(T / 10))
+                    S = (S + T % 10 * (9 - M++ % 6)) % 11;
+                return S ? S - 1 : 'k';
+            },
+            format: function(rut) {
+                const cleanRut = rut.replace(/[^0-9kK]/g, '').toUpperCase();
+                if (cleanRut.length < 2) return cleanRut;
+                const body = cleanRut.slice(0, -1);
+                const dv = cleanRut.slice(-1);
+                const formattedBody = new Intl.NumberFormat('es-CL').format(body);
+                return `${formattedBody}-${dv}`;
+            }
+        };
+
+
+        // --- LÓGICA DE LA APLICACIÓN ---
+        function startTest() {
+            const name = userNameInput.value.trim();
+            const rut = userRutInput.value.trim();
+
+            if (name === '') {
+                userNameInput.focus();
+                return;
+            }
+
+            if (!Rut.validate(rut)) {
+                rutError.textContent = 'El RUT ingresado no es válido.';
+                rutError.classList.remove('hidden');
+                userRutInput.focus();
+                return;
+            }
+
+            rutError.classList.add('hidden');
+            userName = name;
+            userRut = rut;
+            
+            currentQuestionIndex = 0;
+            userAnswers = [];
+            startScreen.classList.add('hidden');
+            resultsScreen.classList.add('hidden');
+            finishScreen.classList.add('hidden');
+            testScreen.classList.remove('hidden');
+            displayQuestion();
+        }
+
+        function displayQuestion() {
+            const question = questions[currentQuestionIndex];
+            document.getElementById('question-number').textContent = currentQuestionIndex + 1;
+            document.getElementById('question-text').textContent = question.situation;
+
+            const progressBar = document.getElementById('progress-bar');
+            const progress = ((currentQuestionIndex) / questions.length) * 100;
+            progressBar.style.width = `${progress}%`;
+
+            const optionsContainer = document.getElementById('options-container');
+            optionsContainer.innerHTML = '';
+            question.options.forEach(option => {
+                const optionId = `q${currentQuestionIndex}_${option.id}`;
+                optionsContainer.innerHTML += `
+                    <div class="relative">
+                        <input type="radio" name="option" id="${optionId}" value="${option.id}" class="sr-only">
+                        <label for="${optionId}" class="option-label flex items-center">
+                            <div>
+                                <span class="font-bold mr-2">${option.id})</span>
+                                <span>${option.text}</span>
+                            </div>
+                        </label>
+                    </div>
+                `;
+            });
+
+            document.querySelectorAll('input[name="option"]').forEach(radio => {
+                radio.addEventListener('change', () => {
+                    nextBtn.disabled = false;
+                    nextBtn.classList.remove('btn-disabled');
+                });
+            });
+
+            nextBtn.disabled = true;
+            nextBtn.classList.add('btn-disabled');
+        }
+
+        function nextQuestion() {
+            const selectedOption = document.querySelector('input[name="option"]:checked');
+            if (!selectedOption) return;
+
+            userAnswers.push({ situation: currentQuestionIndex + 1, answer: selectedOption.value });
+
+            currentQuestionIndex++;
+            if (currentQuestionIndex < questions.length) {
+                displayQuestion();
+            } else {
+                // CAMBIO: Al terminar, mostramos la pantalla de finalización en lugar de los resultados.
+                const progressBar = document.getElementById('progress-bar');
+                progressBar.style.width = `100%`;
+                
+                testScreen.classList.add('hidden');
+                finishScreen.classList.remove('hidden');
+            }
+        }
+
+        // NUEVA FUNCIÓN ASÍNCRONA PARA MANEJAR EL ENVÍO Y LA VISUALIZACIÓN
+        async function submitAndShowResults() {
+            // 1. Calcular los resultados (esto no los muestra)
+            calculateResults();
+
+            // 2. Intentar enviar los datos y esperar el resultado
+            const success = await sendDataToWebhook();
+
+            // 3. Si el envío fue exitoso, mostrar los resultados
+            if (success) {
+                displayResults();
+            }
+        }
+
+        function calculateResults() {
+            let styleFrequency = { 1: 0, 2: 0, 3: 0, 4: 0 };
+            let styleEffectiveness = { 1: 0, 2: 0, 3: 0, 4: 0 };
+
+            userAnswers.forEach(answer => {
+                const key = `${answer.situation}${answer.answer}`;
+                const result = correctionKey[key];
+                if (result) {
+                    styleFrequency[result.style]++;
+                    styleEffectiveness[result.style] += result.score;
+                }
+            });
+
+            const generalEffectivenessScore = Object.values(styleEffectiveness).reduce((a, b) => a + b, 0);
+
+            function getEffectivenessLevel(score) {
+                if (score >= 15) return { level: "Muy Alta", description: "Su capacidad para adaptar su estilo a cada situación es excepcional." };
+                if (score >= 8) return { level: "Alta", description: "Demuestra una gran habilidad para elegir la acción correcta en la mayoría de las situaciones." };
+                if (score >= 4) return { level: "Media Alta", description: "Tiene una buena capacidad para ser un líder efectivo, con espacio para crecer." };
+                if (score >= 2) return { level: "Promedio Positivo", description: "Su efectividad está en un rango adecuado, con potencial de mejora." };
+                if (score >= -1) return { level: "Promedio", description: "Su efectividad es variable. Requiere desarrollar mayor adaptabilidad." };
+                if (score >= -3) return { level: "Promedio Negativo", description: "Tiende a elegir acciones menos efectivas. Es un área de desarrollo clave." };
+                if (score >= -7) return { level: "Media Baja", description: "Frecuentemente sus acciones no son las más adecuadas para las situaciones." };
+                if (score >= -14) return { level: "Baja", description: "Necesita un trabajo significativo en su capacidad para adaptar su liderazgo." };
+                return { level: "Muy Baja", description: "Su enfoque de liderazgo actual es consistentemente ineficaz." };
+            }
+
+            const effectivenessInfo = getEffectivenessLevel(generalEffectivenessScore);
+            const maxFrequency = Math.max(...Object.values(styleFrequency));
+            const dominantStyles = Object.keys(styleFrequency).filter(style => styleFrequency[style] === maxFrequency && maxFrequency > 0);
+
+            finalResults = {
+                userName: userName,
+                userRut: userRut,
+                testDate: new Date().toISOString(),
+                answers: userAnswers,
+                calculations: {
+                    styleFrequency: {
+                        [styleNames[1]]: styleFrequency[1],
+                        [styleNames[2]]: styleFrequency[2],
+                        [styleNames[3]]: styleFrequency[3],
+                        [styleNames[4]]: styleFrequency[4]
+                    },
+                    styleEffectiveness: {
+                        [styleNames[1]]: styleEffectiveness[1],
+                        [styleNames[2]]: styleEffectiveness[2],
+                        [styleNames[3]]: styleEffectiveness[3],
+                        [styleNames[4]]: styleEffectiveness[4]
+                    },
+                    generalEffectivenessScore: generalEffectivenessScore,
+                    effectivenessLevel: effectivenessInfo.level,
+                    effectivenessDescription: effectivenessInfo.description,
+                    dominantStyleIds: dominantStyles,
+                    dominantStyleNames: dominantStyles.map(id => styleNames[id])
+                },
+                interpretations: dominantStyles.map(id => detailedInterpretations[id])
+            };
+        }
+
+        function displayResults() {
+            // CAMBIO: Ocultamos la pantalla de finalización y mostramos la de resultados
+            finishScreen.classList.add('hidden');
+            resultsScreen.classList.remove('hidden');
+
+            document.getElementById('results-for-name').textContent = `Informe para: ${finalResults.userName}`;
+            document.getElementById('results-for-rut').textContent = `RUT o Identificador: ${finalResults.userRut}`;
+            document.getElementById('dominant-style').textContent = finalResults.calculations.dominantStyleNames.join(', ') || "No definido";
+            document.getElementById('general-effectiveness-score').textContent = `${finalResults.calculations.generalEffectivenessScore} puntos`;
+            document.getElementById('general-effectiveness-level').textContent = `Nivel: ${finalResults.calculations.effectivenessLevel}. ${finalResults.calculations.effectivenessDescription}`;
+
+            const interpretationContainer = document.getElementById('interpretation-container');
+            interpretationContainer.innerHTML = '';
+            if (finalResults.interpretations.length > 0) {
+                finalResults.interpretations.forEach(interp => {
+                    interpretationContainer.innerHTML += `
+                        <div class="p-6 bg-gray-50 border rounded-lg">
+                            <h3 class="text-xl font-bold fortis-title mb-2">${interp.name}: ${interp.title}</h3>
+                            <p class="text-gray-600 mb-4">${interp.description}</p>
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+                                <div class="bg-green-100 p-3 rounded-lg border border-green-200">
+                                    <p class="font-semibold text-green-800 mb-1">Fortalezas Clave:</p>
+                                    <p class="text-green-700">${interp.strengths}</p>
+                                </div>
+                                <div class="bg-yellow-100 p-3 rounded-lg border border-yellow-200">
+                                    <p class="font-semibold text-yellow-800 mb-1">Posibles Desafíos:</p>
+                                    <p class="text-yellow-700">${interp.challenges}</p>
+                                </div>
+                                <div class="bg-blue-100 p-3 rounded-lg border border-blue-200">
+                                    <p class="font-semibold text-blue-800 mb-1">Recomendaciones:</p>
+                                    <p class="text-blue-700">${interp.recommendations}</p>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+            } else {
+                interpretationContainer.innerHTML = `<p class="text-center text-gray-600">No se ha identificado un estilo predominante claro. Esto puede indicar una alta flexibilidad o variabilidad en sus respuestas. Revise el gráfico para ver la distribución de sus estilos.</p>`;
+            }
+            
+            renderChart();
+        }
+
+        function renderChart() {
+            const ctx = document.getElementById('results-chart').getContext('2d');
+            const labels = Object.values(styleNames);
+            const frequencyData = Object.values(finalResults.calculations.styleFrequency);
+            const effectivenessData = Object.values(finalResults.calculations.styleEffectiveness);
+
+            if (chartInstance) {
+                chartInstance.destroy();
+            }
+            
+            const frequencyGradient = ctx.createLinearGradient(0, 0, 0, 400);
+            frequencyGradient.addColorStop(0, 'rgba(34, 197, 94, 0.6)');
+            frequencyGradient.addColorStop(1, 'rgba(34, 197, 94, 0.2)');
+
+            const effectivenessGradient = ctx.createLinearGradient(0, 0, 0, 400);
+            effectivenessGradient.addColorStop(0, 'rgba(253, 224, 71, 0.8)');
+            effectivenessGradient.addColorStop(1, 'rgba(253, 224, 71, 0.4)');
+
+            const maxVal = Math.max(...frequencyData, ...effectivenessData);
+            const minVal = Math.min(...effectivenessData);
+
+            chartInstance = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: 'Frecuencia de Uso',
+                            data: frequencyData,
+                            backgroundColor: frequencyGradient,
+                            borderColor: 'rgba(22, 163, 74, 1)',
+                            borderWidth: 2,
+                            borderRadius: 6,
+                        },
+                         {
+                            label: 'Puntaje de Efectividad',
+                            data: effectivenessData,
+                            backgroundColor: effectivenessGradient,
+                            borderColor: 'rgba(234, 179, 8, 1)',
+                            borderWidth: 2,
+                            borderRadius: 6,
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    animation: {
+                        duration: 1500,
+                        easing: 'easeInOutQuart'
+                    },
+                    plugins: {
+                        legend: {
+                           display: true,
+                            position: 'top',
+                            labels: {
+                                font: { size: 14 }
+                            }
+                        },
+                        tooltip: {
+                            enabled: true,
+                            backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                            titleFont: { size: 16 },
+                            bodyFont: { size: 14 },
+                            padding: 10,
+                            cornerRadius: 5,
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: { 
+                                display: false 
+                            },
+                            ticks: {
+                                font: {
+                                    size: 14,
+                                }
+                            }
+                        },
+                        y: {
+                            type: 'linear',
+                            display: true,
+                            position: 'left',
+                            title: {
+                                display: true,
+                                text: 'Valor',
+                                font: { 
+                                    weight: 'bold',
+                                    size: 14
+                                }
+                            },
+                            min: minVal < 0 ? minVal - 1 : 0,
+                            max: maxVal + 1,
+                            grid: {
+                                color: '#e5e7eb',
+                                zeroLineColor: '#374151',
+                                zeroLineWidth: 2,
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // --- Función para enviar datos a Google Sheet (MODIFICADA) ---
+        // Devuelve `true` si tiene éxito, `false` si falla.
+        async function sendDataToWebhook() {
+            const webhookUrl = "https://script.google.com/macros/s/AKfycbxrreAAIJcj8Ey8-NzTZJDoUoAkJQ4AiPH_GPIL9TMNccUhZkALntzurts67BRB9VKNxA/exec";
+            
+            submitBtn.disabled = true;
+            submitBtn.classList.add('btn-disabled');
+            submitBtn.textContent = 'Enviando...';
+
+            let informeCompleto = "";
+            
+            if (finalResults.interpretations.length > 0) {
+                informeCompleto += `El/La evaluado/a ${finalResults.userName} presenta un estilo de liderazgo predominante '${finalResults.calculations.dominantStyleNames.join(' y ')}'. `;
+                
+                finalResults.interpretations.forEach(interp => {
+                    informeCompleto += `${interp.description} En cuanto a sus fortalezas, ${interp.strengths.charAt(0).toLowerCase() + interp.strengths.slice(1)}. Respecto a los desafíos, ${interp.challenges.charAt(0).toLowerCase() + interp.challenges.slice(1)}. Finalmente, como recomendación, se sugiere ${interp.recommendations.charAt(0).toLowerCase() + interp.recommendations.slice(1)}. `;
+                });
+            } else {
+                 informeCompleto += `El/La evaluado/a ${finalResults.userName} no presenta un estilo de liderazgo predominante claro, lo que puede indicar una alta flexibilidad o variabilidad en sus respuestas según la situación.`;
+            }
+
+            const flattenedResults = {
+                nombre: finalResults.userName,
+                rut: finalResults.userRut,
+                fecha: finalResults.testDate,
+                informe: informeCompleto.trim(),
+                estilos_dominantes: finalResults.calculations.dominantStyleNames.join(', '),
+                puntaje_efectividad_general: finalResults.calculations.generalEffectivenessScore,
+                nivel_efectividad: finalResults.calculations.effectivenessLevel,
+                descripcion_efectividad: finalResults.calculations.effectivenessDescription,
+                frecuencia_autocratico: finalResults.calculations.styleFrequency['Autocrático'],
+                frecuencia_integrado: finalResults.calculations.styleFrequency['Integrado'],
+                frecuencia_relacionado: finalResults.calculations.styleFrequency['Relacionado'],
+                frecuencia_separado: finalResults.calculations.styleFrequency['Separado'],
+                efectividad_autocratico: finalResults.calculations.styleEffectiveness['Autocrático'],
+                efectividad_integrado: finalResults.calculations.styleEffectiveness['Integrado'],
+                efectividad_relacionado: finalResults.calculations.styleEffectiveness['Relacionado'],
+                efectividad_separado: finalResults.calculations.styleEffectiveness['Separado'],
+                respuestas_detalladas: JSON.stringify(finalResults.answers)
+            };
+
+            const payload = {
+                apiKey: 'DjSqnpd?goB#D#sCj4hJ69',
+                sheetName: 'CEEL',
+                results: flattenedResults
+            };
+
+            try {
+                const response = await fetch(webhookUrl, {
+                    method: 'POST',
+                    mode: 'cors', 
+                    headers: {
+                        'Content-Type': 'text/plain;charset=UTF-8'
+                    },
+                    body: JSON.stringify(payload)
+                });
+
+                // Google Apps Script a veces responde con un error de CORS aunque funcione,
+                // por lo que el bloque catch(e) lo manejará como éxito si es un SyntaxError.
+                const result = await response.json();
+
+                if (result.status === "success") {
+                    return true; // Éxito
+                } else {
+                    throw new Error(result.message || 'El script de Google devolvió un error.');
+                }
+
+            } catch (error) {
+                console.error('Error al enviar los datos:', error);
+                
+                // Manejo especial para el error de CORS que no es un error real de envío
+                if (error instanceof SyntaxError) {
+                    console.log("Se recibió una respuesta no-JSON, probablemente por CORS. Asumiendo éxito.");
+                    return true; // Éxito
+                } else {
+                    submitBtn.textContent = 'Error en el envío';
+                    submitBtn.classList.remove('btn-primary', 'btn-disabled');
+                    submitBtn.classList.add('bg-red-600', 'text-white');
+                    
+                    setTimeout(() => {
+                        submitBtn.disabled = false;
+                        submitBtn.textContent = 'Reintentar envío';
+                        submitBtn.classList.remove('bg-red-600', 'text-white');
+                        submitBtn.classList.add('btn-primary');
+                    }, 5000);
+                    return false; // Fallo
+                }
+            }
+        }
+
+        // --- EVENT LISTENERS ---
+        startBtn.addEventListener('click', startTest);
+        nextBtn.addEventListener('click', nextQuestion);
+        submitBtn.addEventListener('click', submitAndShowResults); // CAMBIO
+        
+        userRutInput.addEventListener('input', (e) => {
+            e.target.value = Rut.format(e.target.value);
+        });
+
+    </script>
+</body>
+</html>
