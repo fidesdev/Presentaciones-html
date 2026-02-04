@@ -746,6 +746,7 @@
                 const response = await fetch(webhookUrl, {
                     method: 'POST',
                     mode: 'cors', 
+                    redirect: 'follow',
                     headers: {
                         'Content-Type': 'text/plain;charset=UTF-8'
                     },
@@ -797,3 +798,4 @@
     </script>
 </body>
 </html>
+
